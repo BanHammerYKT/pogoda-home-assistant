@@ -275,7 +275,23 @@ class WeatherUpdater(DataUpdateCoordinator):
 
         timeout = aiohttp.ClientTimeout(total=20)
         async with aiohttp.ClientSession(timeout=timeout) as session:
-            rs = await self.request(session, self.__api_key, self._lat, self._lon)
+            try:
+                rs = await self.request(session, self.__api_key, self._lat, self._lon)
+            except aiohttp.ClientError as err:
+                status = err.args[0] if err.args else None
+                if status == 429:
+                    _LOGGER.warning(
+                        "Yandex.Weather API rate limit exceeded (HTTP 429). "
+                        "Using cached weather data."
+                    )
+                    if self.weather_data is not None:
+                        return self.weather_data
+
+                    _LOGGER.error(
+                        "Received 429 from Yandex.Weather API but no cached "
+                        "weather data is available."
+                    )
+                raise
 
         self.weather_data = rs["data"]
         return self.weather_data
