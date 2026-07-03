@@ -142,11 +142,16 @@ UPDATES_PER_DAY_MAP = {
     "rare": 6,
     "standard": 12,
     "often": 24,
+    "every30min": 48,
+    "every20min": 72,
+    "every15min": 96,
+    "every10min": 144,
+    "every5min": 288,
 }
 UPDATES_PER_DAY = "updates_per_day"
 UPDATES_PER_DAY_SELECTOR = selector.SelectSelector(
     selector.SelectSelectorConfig(
-        options=["rare", "standard", "often"],
+        options=["rare", "standard", "often", "every30min", "every20min", "every15min", "every10min", "every5min"],
         mode=selector.SelectSelectorMode.DROPDOWN,
         translation_key=UPDATES_PER_DAY,
     )
